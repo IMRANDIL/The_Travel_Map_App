@@ -6,7 +6,8 @@ const router = require('express').Router();
 
 
 router.post('/new-pin', createPin);
-router.get('/', getAllPin)
+router.get('/', getAllPin);
+
 
 
 

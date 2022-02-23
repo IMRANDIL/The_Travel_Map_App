@@ -9,7 +9,8 @@ const app = express();
 
 
 
-const router = require('./routes/Router')
+const router = require('./routes/Router');
+const Userrouter = require('./routes/userRouter')
 
 
 
@@ -17,7 +18,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
 
 
-
+app.use('/api/users', Userrouter)
 app.use('/api/pins', router)
 
 
