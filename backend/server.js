@@ -6,15 +6,19 @@ const connectdb = require('./db/connnection')
 
 const app = express();
 
+
+
+
 const router = require('./routes/Router')
 
 
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }))
 
 
 
-
-
+app.use('/', router)
 
 
 const PORT = process.env.PORT || 3000;
