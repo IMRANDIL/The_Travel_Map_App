@@ -4,8 +4,15 @@ import ReactMapGL, { Marker, Popup } from 'react-map-gl';
 import axios from 'axios'
 import RoomIcon from '@mui/icons-material/Room';
 import StarBorderPurple500Icon from '@mui/icons-material/StarBorderPurple500';
-
+import { format } from 'timeago.js';
 import './App.css'
+
+import Register from './components/Register';
+import Login from './components/Login';
+
+
+
+
 
 const App = () => {
 
@@ -17,9 +24,23 @@ const App = () => {
     height: '100vh'
   });
 
-  const [showPopup, setShowPopup] = React.useState(true);
 
   const [pins, setPins] = useState([]);
+
+  const [currentUser, setCurrentUser] = useState(null)
+
+  const [currentPlaceId, setCurrentPlaceId] = useState(null);
+
+  const [newPlace, setNewPlace] = useState(null);
+
+  const [title, setTitle] = useState(null);
+  const [desc, setDesc] = useState(null);
+  const [rating, setRating] = useState(0);
+
+  const [showRegister, setShowRegister] = useState(false)
+  const [showLogin, setShowLogin] = useState(false)
+
+
 
 
   useEffect(() => {
@@ -45,6 +66,57 @@ const App = () => {
 
 
 
+  const handleMarkerClick = (id, lat, long) => {
+    setCurrentPlaceId(id);
+    setViewport({ ...viewport, latitude: lat, longitude: long })
+  }
+
+
+
+
+  const handleAddClick = (e) => {
+    console.log(e);
+    const [long, lat] = e.lngLat;
+    setNewPlace({
+      lat,
+      long
+    })
+  }
+
+
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const newPin = {
+      userName: currentUser,
+      title,
+      desc,
+      rating,
+      lat: newPlace.lat,
+      long: newPlace.long
+    }
+
+
+    try {
+      const response = await axios.post(`/pins/new-pin`, newPin);
+      setPins([...pins, response.data]);
+
+      setNewPlace(null)
+    } catch (error) {
+      console.log(error);
+    }
+
+
+  }
+
+
+
+
+
+
+
 
 
   return (
@@ -54,42 +126,93 @@ const App = () => {
       onViewportChange={(viewport) => setViewport(viewport)}
       mapStyle="mapbox://styles/imrandil/cl00cas9t000e14s6zrokeniv"
       mapboxApiAccessToken={process.env.REACT_APP_MAPBOX}
+      onDblClick={(e) => handleAddClick(e)}
+      transitionDuration="200"
     >
 
 
-      {pins.map((pin, index) => (
-        <>
-          <Marker key={index} longitude={pin.long} latitude={pin.lat} anchor="bottom" >
-            <RoomIcon style={{ fontSize: viewport.zoom * 5, color: 'firebrick' }} />
+      {pins.map((pin) => (
+
+        <div key={pin._id}>
+          <Marker longitude={pin.long} latitude={pin.lat} offsetLeft={-viewport.zoom * 2.5} offsetTop={-viewport.zoom * 5} anchor="bottom"  >
+            <RoomIcon style={{ fontSize: viewport.zoom * 5, color: pin.userName === currentUser ? 'tomato' : 'firebrick', cursor: 'pointer' }} onClick={() => handleMarkerClick(pin._id, pin.lat, pin.long)} />
           </Marker>
-          {showPopup && (
-            <Popup longitude={87.186058} latitude={26.053230}
+
+          {pin._id === currentPlaceId && (
+
+
+            <Popup longitude={pin.long} latitude={pin.lat}
               closeButton={true}
               closeOnClick={false}
               anchor="bottom"
-              onClose={() => setShowPopup(false)}>
+              onClose={() => setCurrentPlaceId(null)}>
               <div className='card'>
                 <label htmlFor="place">Place</label>
-                <h4 className='place'>Ali's Abode</h4>
+                <h4 className='place'>{pin.title}</h4>
                 <label htmlFor="review">Review</label>
-                <p className='desc'>Love this place. Out of this world!</p>
+                <p className='desc'>{pin.desc}</p>
                 <label htmlFor="rating">Rating</label>
                 <div className='stars'>
 
-                  <StarBorderPurple500Icon className='star' />
-                  <StarBorderPurple500Icon className='star' />
-                  <StarBorderPurple500Icon className='star' />
-                  <StarBorderPurple500Icon className='star' />
-                  <StarBorderPurple500Icon className='star' />
+                  {Array(pin.rating).fill(<StarBorderPurple500Icon className='star' />)}
+
 
                 </div>
 
                 <label htmlFor="information">Information</label>
-                <span className='username'>Engraved by <b>Ali Imran Adil</b></span>
-                <span className='date'>1 hour ago</span>
+                <span className='username'>Engraved by <b>{pin.userName}</b></span>
+                <span className='date'>{format(pin.createdAt)}</span>
               </div>
-            </Popup>)}</>
+            </Popup>)}
+        </div>
+
       ))}
+      {newPlace && (
+
+
+
+        <Popup longitude={newPlace.long} latitude={newPlace.lat}
+          closeButton={true}
+          closeOnClick={false}
+          anchor="bottom"
+          onClose={() => setNewPlace(null)}>
+
+
+          <div>
+
+            <form onSubmit={handleSubmit}>
+              <label htmlFor="title">Title</label>
+              <input placeholder='Enter a title' onChange={(e) => setTitle(e.target.value)} />
+              <label htmlFor="review">Review</label>
+              <textarea rows='3' cols='5' placeholder='Say us something about it' onChange={(e) => setDesc(e.target.value)} />
+              <label htmlFor="rating">Rating</label>
+              <select onChange={(e) => setRating(e.target.value)}>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+
+              </select>
+              <button className='submitBtn' type='submit'>Add Pin</button>
+
+            </form>
+          </div>
+
+        </Popup>)}
+
+
+      {currentUser ? (<button className='button logout'>Log out</button>) : (<div className='buttons'>
+        <button className='button login' onClick={() => setShowLogin(true)}>Login</button>
+        <button className='button register' onClick={() => setShowRegister(true)}>Register</button>
+      </div>)}
+
+
+      {showRegister && <Register setShowRegister={setShowRegister} />}
+      {showLogin && <Login setShowLogin={setShowLogin} />}
+
+
+
 
 
     </ReactMapGL>

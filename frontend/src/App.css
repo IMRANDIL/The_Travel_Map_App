@@ -17,6 +17,43 @@
   
 }
 
+
+.button{
+  border: none;
+  padding: 5px;
+  border: 2px solid rgb(255, 189, 189);
+  border-radius: 5px;
+  color: white;
+ cursor: pointer;
+
+}
+
+
+
+.buttons,.logout{
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+
+.logout{
+  background-color: black;
+}
+
+
+.login{
+  background-color: teal;
+  margin-right: 10px;
+}
+
+
+.register{
+  background-color: slateblue;
+}
+
+
+
 label{
   color: tomato;
   font-size: 13px;
@@ -44,13 +81,72 @@ color: gold;
 }
 
 
+
+form{
+  width: 200px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+
+input,textarea{
+  border: none;
+  border-bottom: 1px solid gray;
+  text-align: center;
+}
+
+textarea{
+  resize: none;
+}
+
+input::placeholder,textarea::placeholder{
+font-size: 12px;
+text-align: center;
+color: rgb(190, 189, 189);
+}
+
+.submitBtn{
+  cursor: pointer;
+  border: none;
+  padding: 5px;
+  border-radius: 5px;
+  color: white;
+  background-color: tomato;
+  margin-top: 10px;
+}
+
+
+
+
+.submitBtn:hover{
+  background-color: rgb(241, 176, 165);
+}
+
+
+
+
+
+
+
+
+
+
+
+
 .mapboxgl-popup-close-button{
   right: 7px !important;
   top: 2px;
-  font-size: 20px !important;
+  font-size: 8px !important;
   border: 1px solid firebrick;
   border-radius: 4px;
   padding: 4px;
   background-color: black;
   color: white;
+}
+
+
+.mapboxgl-popup-close-button:hover{
+  background-color: tomato;
 }
