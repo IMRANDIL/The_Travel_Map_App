@@ -5,7 +5,7 @@ const connectdb = require('./db/connnection')
 
 
 const app = express();
-
+const cors = require('cors')
 
 
 
@@ -13,7 +13,7 @@ const router = require('./routes/Router');
 const Userrouter = require('./routes/userRouter')
 
 
-
+app.use(cors())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
 

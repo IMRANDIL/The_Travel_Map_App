@@ -1,7 +1,7 @@
-
+import { useEffect, useState } from 'react';
 import * as React from 'react';
 import ReactMapGL, { Marker, Popup } from 'react-map-gl';
-
+import axios from 'axios'
 import RoomIcon from '@mui/icons-material/Room';
 import StarBorderPurple500Icon from '@mui/icons-material/StarBorderPurple500';
 
@@ -19,6 +19,33 @@ const App = () => {
 
   const [showPopup, setShowPopup] = React.useState(true);
 
+  const [pins, setPins] = useState([]);
+
+
+  useEffect(() => {
+
+    const getPins = async () => {
+      try {
+        const { data } = await axios.get(`/pins`);
+
+        setPins(data)
+
+
+
+
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    getPins()
+
+  }, [])
+
+
+
+
+
 
   return (
     <ReactMapGL
@@ -29,36 +56,42 @@ const App = () => {
       mapboxApiAccessToken={process.env.REACT_APP_MAPBOX}
     >
 
-      <Marker longitude={87.186058} latitude={26.053230} anchor="bottom" >
-        <RoomIcon style={{ fontSize: viewport.zoom * 5, color: 'firebrick' }} />
-      </Marker>
-      {showPopup && (
-        <Popup longitude={87.186058} latitude={26.053230}
-          closeButton={true}
-          closeOnClick={false}
-          anchor="bottom"
-          onClose={() => setShowPopup(false)}>
-          <div className='card'>
-            <label htmlFor="place">Place</label>
-            <h4 className='place'>Ali's Abode</h4>
-            <label htmlFor="review">Review</label>
-            <p className='desc'>Love this place. Out of this world!</p>
-            <label htmlFor="rating">Rating</label>
-            <div className='stars'>
 
-              <StarBorderPurple500Icon className='star' />
-              <StarBorderPurple500Icon className='star' />
-              <StarBorderPurple500Icon className='star' />
-              <StarBorderPurple500Icon className='star' />
-              <StarBorderPurple500Icon className='star' />
+      {pins.map((pin, index) => (
+        <>
+          <Marker key={index} longitude={pin.long} latitude={pin.lat} anchor="bottom" >
+            <RoomIcon style={{ fontSize: viewport.zoom * 5, color: 'firebrick' }} />
+          </Marker>
+          {showPopup && (
+            <Popup longitude={87.186058} latitude={26.053230}
+              closeButton={true}
+              closeOnClick={false}
+              anchor="bottom"
+              onClose={() => setShowPopup(false)}>
+              <div className='card'>
+                <label htmlFor="place">Place</label>
+                <h4 className='place'>Ali's Abode</h4>
+                <label htmlFor="review">Review</label>
+                <p className='desc'>Love this place. Out of this world!</p>
+                <label htmlFor="rating">Rating</label>
+                <div className='stars'>
 
-            </div>
+                  <StarBorderPurple500Icon className='star' />
+                  <StarBorderPurple500Icon className='star' />
+                  <StarBorderPurple500Icon className='star' />
+                  <StarBorderPurple500Icon className='star' />
+                  <StarBorderPurple500Icon className='star' />
 
-            <label htmlFor="information">Information</label>
-            <span className='username'>Engraved by <b>Ali Imran Adil</b></span>
-            <span className='date'>1 hour ago</span>
-          </div>
-        </Popup>)}
+                </div>
+
+                <label htmlFor="information">Information</label>
+                <span className='username'>Engraved by <b>Ali Imran Adil</b></span>
+                <span className='date'>1 hour ago</span>
+              </div>
+            </Popup>)}</>
+      ))}
+
+
     </ReactMapGL>
   )
 }
