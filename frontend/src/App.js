@@ -1,11 +1,11 @@
 
 import * as React from 'react';
-import ReactMapGL from 'react-map-gl';
+import ReactMapGL, { Marker, Popup } from 'react-map-gl';
 
+import RoomIcon from '@mui/icons-material/Room';
+import StarBorderPurple500Icon from '@mui/icons-material/StarBorderPurple500';
 
-
-
-
+import './App.css'
 
 const App = () => {
 
@@ -17,7 +17,7 @@ const App = () => {
     height: '100vh'
   });
 
-
+  const [showPopup, setShowPopup] = React.useState(true);
 
 
   return (
@@ -25,9 +25,41 @@ const App = () => {
       {...viewport}
 
       onViewportChange={(viewport) => setViewport(viewport)}
-      mapStyle="mapbox://styles/mapbox/streets-v9"
+      mapStyle="mapbox://styles/imrandil/cl00cas9t000e14s6zrokeniv"
       mapboxApiAccessToken={process.env.REACT_APP_MAPBOX}
-    />
+    >
+
+      <Marker longitude={87.186058} latitude={26.053230} anchor="bottom" >
+        <RoomIcon style={{ fontSize: viewport.zoom * 5, color: 'firebrick' }} />
+      </Marker>
+      {showPopup && (
+        <Popup longitude={87.186058} latitude={26.053230}
+          closeButton={true}
+          closeOnClick={false}
+          anchor="bottom"
+          onClose={() => setShowPopup(false)}>
+          <div className='card'>
+            <label htmlFor="place">Place</label>
+            <h4 className='place'>Ali's Abode</h4>
+            <label htmlFor="review">Review</label>
+            <p className='desc'>Love this place. Out of this world!</p>
+            <label htmlFor="rating">Rating</label>
+            <div className='stars'>
+
+              <StarBorderPurple500Icon className='star' />
+              <StarBorderPurple500Icon className='star' />
+              <StarBorderPurple500Icon className='star' />
+              <StarBorderPurple500Icon className='star' />
+              <StarBorderPurple500Icon className='star' />
+
+            </div>
+
+            <label htmlFor="information">Information</label>
+            <span className='username'>Engraved by <b>Ali Imran Adil</b></span>
+            <span className='date'>1 hour ago</span>
+          </div>
+        </Popup>)}
+    </ReactMapGL>
   )
 }
 export default App
