@@ -26,7 +26,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "now-build": "npm run build"
   },
   "eslintConfig": {
     "extends": [
@@ -44,5 +45,5 @@
     "transform-loader": "^0.2.4",
     "webworkify-webpack": "^1.0.6"
   },
-  "proxy": "http://localhost:5000/api"
+  "proxy": "https://backend-gamma-mauve.vercel.app/api"
 }
