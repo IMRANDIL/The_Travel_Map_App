@@ -63,11 +63,11 @@ const Register = ({ setShowRegister }) => {
 
             <form onSubmit={handleSubmit}>
 
-                <input type="text" placeholder='userName' ref={nameRef} />
-                <input type="email" placeholder='email' ref={emailRef} />
-                <input type="password" placeholder='password' ref={passwordRef} />
+                <input type="text" placeholder='userName' ref={nameRef} required />
+                <input type="email" placeholder='email' ref={emailRef} required />
+                <input type="password" placeholder='password' ref={passwordRef} required />
 
-                <button className='registerBtn'>Register</button>
+                <button className='registerBtn' >Register</button>
 
                 {success && <span className='success'>Successful, You can login now!</span>}
 

@@ -16,6 +16,10 @@ import Login from './components/Login';
 
 const App = () => {
 
+
+  const myStorage = window.localStorage
+
+
   const [viewport, setViewport] = React.useState({
     latitude: 26.053230,
     longitude: 87.186058,
@@ -24,10 +28,10 @@ const App = () => {
     height: '100vh'
   });
 
-
+  const [error, setError] = useState('')
   const [pins, setPins] = useState([]);
 
-  const [currentUser, setCurrentUser] = useState(null)
+  const [currentUser, setCurrentUser] = useState(myStorage.getItem('user'))
 
   const [currentPlaceId, setCurrentPlaceId] = useState(null);
 
@@ -89,6 +93,10 @@ const App = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!currentUser) {
+      return setError('Please Login First!')
+    }
+
     const newPin = {
       userName: currentUser,
       title,
@@ -102,7 +110,7 @@ const App = () => {
     try {
       const response = await axios.post(`/pins/new-pin`, newPin);
       setPins([...pins, response.data]);
-
+      setError('')
       setNewPlace(null)
     } catch (error) {
       console.log(error);
@@ -114,6 +122,24 @@ const App = () => {
 
 
 
+  const handleLogout = () => {
+    myStorage.removeItem('user');
+    setCurrentUser(null)
+  }
+
+
+
+  const handleLogin = () => {
+    setShowRegister(false);
+    setShowLogin(true)
+  }
+
+
+
+  const handleRegister = () => {
+    setShowRegister(true);
+    setShowLogin(false)
+  }
 
 
 
@@ -179,14 +205,14 @@ const App = () => {
 
 
           <div>
-
+            <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>
             <form onSubmit={handleSubmit}>
               <label htmlFor="title">Title</label>
-              <input placeholder='Enter a title' onChange={(e) => setTitle(e.target.value)} />
+              <input placeholder='Enter a title' onChange={(e) => setTitle(e.target.value)} required />
               <label htmlFor="review">Review</label>
-              <textarea rows='3' cols='5' placeholder='Say us something about it' onChange={(e) => setDesc(e.target.value)} />
+              <textarea rows='3' cols='5' placeholder='Say us something about it' onChange={(e) => setDesc(e.target.value)} required />
               <label htmlFor="rating">Rating</label>
-              <select onChange={(e) => setRating(e.target.value)}>
+              <select onChange={(e) => setRating(e.target.value)} required>
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -202,14 +228,14 @@ const App = () => {
         </Popup>)}
 
 
-      {currentUser ? (<button className='button logout'>Log out</button>) : (<div className='buttons'>
-        <button className='button login' onClick={() => setShowLogin(true)}>Login</button>
-        <button className='button register' onClick={() => setShowRegister(true)}>Register</button>
+      {currentUser ? (<button className='button logout' onClick={handleLogout}>Log out</button>) : (<div className='buttons'>
+        <button className='button login' onClick={handleLogin}>Login</button>
+        <button className='button register' onClick={handleRegister}>Register</button>
       </div>)}
 
 
-      {showRegister && <Register setShowRegister={setShowRegister} />}
-      {showLogin && <Login setShowLogin={setShowLogin} />}
+      {showRegister && <Register setShowRegister={setShowRegister} setShowLogin={setShowLogin} />}
+      {showLogin && <Login setShowLogin={setShowLogin} myStorage={myStorage} setCurrentUser={setCurrentUser} setShowRegister={setShowRegister} />}
 
 
 

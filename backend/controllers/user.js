@@ -28,7 +28,7 @@ const registerUser = async (req, res, next) => {
         const user = await newUser.save();
 
         res.status(200).json(user)
-
+        next()
 
     } catch (error) {
         res.status(500).json(error);
@@ -64,7 +64,7 @@ const loginUser = async (req, res, next) => {
 
         res.status(200).json({ _id: user._id, userName: user.userName })
 
-
+        next()
 
 
     } catch (error) {
