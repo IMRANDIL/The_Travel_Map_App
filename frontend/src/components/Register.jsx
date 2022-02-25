@@ -34,7 +34,7 @@ const Register = ({ setShowRegister }) => {
         }
 
         try {
-            await axios.post(`/users/register`, newUser);
+            await axios.post(`https://travel-app-backend0016.herokuapp.com/api/users/register`, newUser);
             setFailure(false)
             setSuccess(true)
 

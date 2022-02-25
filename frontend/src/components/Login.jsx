@@ -33,7 +33,7 @@ const Login = ({ setShowLogin, myStorage, setCurrentUser }) => {
         }
 
         try {
-            const res = await axios.post(`/users/login`, user);
+            const res = await axios.post(`https://travel-app-backend0016.herokuapp.com/api/users/login`, user);
 
             myStorage.setItem("user", res.data.userName);
             setCurrentUser(res.data.userName);

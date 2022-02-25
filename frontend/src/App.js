@@ -51,7 +51,7 @@ const App = () => {
 
     const getPins = async () => {
       try {
-        const { data } = await axios.get(`/pins`);
+        const { data } = await axios.get(`https://travel-app-backend0016.herokuapp.com/api/pins`);
 
         setPins(data)
 
@@ -79,7 +79,7 @@ const App = () => {
 
 
   const handleAddClick = (e) => {
-    console.log(e);
+
     const [long, lat] = e.lngLat;
     setNewPlace({
       lat,
@@ -108,7 +108,7 @@ const App = () => {
 
 
     try {
-      const response = await axios.post(`/pins/new-pin`, newPin);
+      const response = await axios.post(`https://travel-app-backend0016.herokuapp.com/api/pins/new-pin`, newPin);
       setPins([...pins, response.data]);
       setError('')
       setNewPlace(null)
